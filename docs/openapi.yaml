@@ -1,0 +1,471 @@
+openapi: 3.1.1
+info:
+  title: Blog API
+  version: 1.0.0
+  description: >
+    API REST para gestionar autores y posts de un blog.
+    Permite operaciones CRUD completas sobre autores y publicaciones,
+    con relación de clave foránea entre posts y autores.
+ 
+servers:
+  - url: http://localhost:3000
+    description: Servidor de desarrollo
+  # Cuando despliegues a Railway, agregá acá la URL pública, por ejemplo:
+  # - url: https://tu-app-production.up.railway.app
+  #   description: Servidor de producción
+ 
+tags:
+  - name: Autores
+    description: Operaciones sobre autores
+  - name: Posts
+    description: Operaciones sobre posts del blog
+ 
+paths:
+  /api/authors:
+    get:
+      summary: Obtener todos los autores
+      tags: [Autores]
+      responses:
+        '200':
+          description: Lista de autores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+        '500':
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Crear un nuevo autor
+      tags: [Autores]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorInput'
+      responses:
+        '201':
+          description: Autor creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '400':
+          description: Faltan campos requeridos (nombre y/o email)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: El email ya está registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+ 
+  /api/authors/{id}:
+    get:
+      summary: Obtener un autor por ID
+      tags: [Autores]
+      parameters:
+        - $ref: '#/components/parameters/AuthorId'
+      responses:
+        '200':
+          description: Autor encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '404':
+          description: Autor no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Actualizar un autor existente
+      tags: [Autores]
+      parameters:
+        - $ref: '#/components/parameters/AuthorId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorInput'
+      responses:
+        '200':
+          description: Autor actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '404':
+          description: Autor no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: El email ya está registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Eliminar un autor
+      tags: [Autores]
+      parameters:
+        - $ref: '#/components/parameters/AuthorId'
+      responses:
+        '204':
+          description: Autor eliminado exitosamente (sin contenido)
+        '404':
+          description: Autor no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+ 
+  /api/posts:
+    get:
+      summary: Obtener todos los posts
+      tags: [Posts]
+      responses:
+        '200':
+          description: Lista de posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        '500':
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Crear un nuevo post
+      tags: [Posts]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostInput'
+      responses:
+        '201':
+          description: Post creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: Faltan campos requeridos, o el autor indicado no existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+ 
+  /api/posts/author/{authorId}:
+    get:
+      summary: Obtener los posts de un autor específico
+      tags: [Posts]
+      parameters:
+        - name: authorId
+          in: path
+          required: true
+          description: ID del autor cuyos posts se quieren obtener
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: >
+            Lista de posts del autor, con los datos del autor incluidos
+            (JOIN). Nota: esta forma de respuesta es distinta a la de los
+            demás endpoints de posts. Si el autor no tiene posts, o no
+            existe, se devuelve un array vacío.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostWithAuthor'
+        '500':
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+ 
+  /api/posts/{id}:
+    get:
+      summary: Obtener un post por ID
+      tags: [Posts]
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+      responses:
+        '200':
+          description: Post encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: Post no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Actualizar un post existente
+      tags: [Posts]
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUpdateInput'
+      responses:
+        '200':
+          description: Post actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: Post no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Eliminar un post
+      tags: [Posts]
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+      responses:
+        '204':
+          description: Post eliminado exitosamente (sin contenido)
+        '404':
+          description: Post no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+ 
+components:
+  parameters:
+    AuthorId:
+      name: id
+      in: path
+      required: true
+      description: ID del autor
+      schema:
+        type: integer
+    PostId:
+      name: id
+      in: path
+      required: true
+      description: ID del post
+      schema:
+        type: integer
+ 
+  schemas:
+    Author:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único del autor
+        nombre:
+          type: string
+          description: Nombre completo del autor
+        email:
+          type: string
+          format: email
+          description: Email del autor (único)
+        bio:
+          type: string
+          nullable: true
+          description: Biografía del autor (opcional)
+        creado:
+          type: string
+          format: date-time
+          description: Fecha de creación del registro
+ 
+    AuthorInput:
+      type: object
+      required:
+        - nombre
+        - email
+      properties:
+        nombre:
+          type: string
+          description: Nombre completo del autor
+        email:
+          type: string
+          format: email
+          description: Email del autor (debe ser único)
+        bio:
+          type: string
+          description: Biografía del autor (opcional)
+ 
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único del post
+        titulo:
+          type: string
+          description: Título del post
+        contenido:
+          type: string
+          description: Contenido del post
+        autores_id:
+          type: integer
+          description: ID del autor al que pertenece el post
+        published:
+          type: boolean
+          description: Indica si el post está publicado
+          default: false
+        creado:
+          type: string
+          format: date-time
+          description: Fecha de creación del registro
+ 
+    PostWithAuthor:
+      type: object
+      description: >
+        Forma de respuesta específica de GET /api/posts/author/{authorId}.
+        Resulta de un JOIN entre posts y authors, con columnas aplanadas
+        y prefijadas (a diferencia del schema Post plano).
+      properties:
+        post_id:
+          type: integer
+          description: ID del post
+        post_titulo:
+          type: string
+          description: Título del post
+        contenido:
+          type: string
+          description: Contenido del post
+        post_published:
+          type: boolean
+          description: Indica si el post está publicado
+        post_creado:
+          type: string
+          format: date-time
+          description: Fecha de creación del post
+        author_id:
+          type: integer
+          description: ID del autor
+        author_nombre:
+          type: string
+          description: Nombre del autor
+        author_email:
+          type: string
+          format: email
+          description: Email del autor
+        bio:
+          type: string
+          nullable: true
+          description: Biografía del autor
+ 
+    PostInput:
+      type: object
+      required:
+        - titulo
+        - contenido
+        - author_id
+      properties:
+        titulo:
+          type: string
+          description: Título del post
+        contenido:
+          type: string
+          description: Contenido del post
+        author_id:
+          type: integer
+          description: ID del autor que crea el post (debe existir)
+        published:
+          type: boolean
+          description: Indica si el post está publicado
+          default: false
+ 
+    PostUpdateInput:
+      type: object
+      description: Todos los campos son opcionales al actualizar
+      properties:
+        titulo:
+          type: string
+        contenido:
+          type: string
+        published:
+          type: boolean
+ 
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Mensaje de error
