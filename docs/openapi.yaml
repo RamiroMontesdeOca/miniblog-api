@@ -13,7 +13,7 @@ servers:
   # Cuando despliegues a Railway, agregá acá la URL pública, por ejemplo:
   # - url: https://tu-app-production.up.railway.app
   #   description: Servidor de producción
- 
+
 tags:
   - name: Autores
     description: Operaciones sobre autores
