@@ -2,12 +2,11 @@
 
 API REST para gestionar autores y posts de un blog. Permite operaciones CRUD completas sobre autores y publicaciones, con relación de clave foránea entre posts y autores.
 
-Proyecto construido con Node.js, Express y PostgreSQL.
-
+Proyecto construido con Node.js, Express y PostgreSQL. Desplegado en Railway.
 
 ## URL Base
 
-`<URL_DE_RAILWAY>` (por ejemplo, `https://miniblog-api-production.up.railway.app`)
+[https://miniblog-api-production-6f3c.up.railway.app](https://miniblog-api-production-6f3c.up.railway.app)
 
 En desarrollo local: `http://localhost:3000`
 
@@ -46,7 +45,7 @@ Documentación completa e interactiva de cada endpoint (parámetros, schemas, c�
 ### Obtener todos los autores
 
 ```bash
-curl http://localhost:3000/authors
+curl https://miniblog-api-production-6f3c.up.railway.app/authors
 ```
 
 **Respuesta:**
@@ -58,14 +57,21 @@ curl http://localhost:3000/authors
     "nombre": "Ana García",
     "email": "ana@example.com",
     "bio": "Desarrolladora full-stack apasionada por Node.js",
-    "creado": "2026-09-23T04:50:00.000Z"
+    "creado": "2026-09-22T00:10:41.428Z"
   },
   {
     "id": 2,
     "nombre": "Carlos Ruiz",
     "email": "carlos@example.com",
     "bio": "Escritor técnico especializado en bases de datos",
-    "creado": "2026-09-23T04:50:00.000Z"
+    "creado": "2026-09-22T00:10:41.428Z"
+  },
+  {
+    "id": 3,
+    "nombre": "María López",
+    "email": "maria@example.com",
+    "bio": "Ingeniera de software con foco en APIs REST",
+    "creado": "2026-09-22T00:10:41.428Z"
   }
 ]
 ```
@@ -73,7 +79,7 @@ curl http://localhost:3000/authors
 ### Obtener un autor específico
 
 ```bash
-curl http://localhost:3000/authors/1
+curl https://miniblog-api-production-6f3c.up.railway.app/authors/1
 ```
 
 **Respuesta:**
@@ -84,14 +90,14 @@ curl http://localhost:3000/authors/1
   "nombre": "Ana García",
   "email": "ana@example.com",
   "bio": "Desarrolladora full-stack apasionada por Node.js",
-  "creado": "2026-09-23T04:50:00.000Z"
+  "creado": "2026-09-22T00:10:41.428Z"
 }
 ```
 
 ### Crear un nuevo autor
 
 ```bash
-curl -X POST http://localhost:3000/authors \
+curl -X POST https://miniblog-api-production-6f3c.up.railway.app/authors \
   -H "Content-Type: application/json" \
   -d '{
     "nombre": "María Rodríguez",
@@ -100,7 +106,7 @@ curl -X POST http://localhost:3000/authors \
   }'
 ```
 
-**Respuesta:**
+**Respuesta (ejemplo ilustrativo; el id real depende de cuántos registros haya):**
 
 ```json
 {
@@ -115,7 +121,7 @@ curl -X POST http://localhost:3000/authors \
 ### Actualizar un autor
 
 ```bash
-curl -X PUT http://localhost:3000/authors/4 \
+curl -X PUT https://miniblog-api-production-6f3c.up.railway.app/authors/4 \
   -H "Content-Type: application/json" \
   -d '{
     "bio": "Ingeniera de software y speaker internacional"
@@ -137,7 +143,7 @@ curl -X PUT http://localhost:3000/authors/4 \
 ### Eliminar un autor
 
 ```bash
-curl -X DELETE http://localhost:3000/authors/4
+curl -X DELETE https://miniblog-api-production-6f3c.up.railway.app/authors/4
 ```
 
 Responde `204 No Content` sin body.
@@ -145,20 +151,36 @@ Responde `204 No Content` sin body.
 ### Obtener todos los posts
 
 ```bash
-curl http://localhost:3000/posts
+curl https://miniblog-api-production-6f3c.up.railway.app/posts
 ```
 
-**Respuesta:**
+**Respuesta (ordenados alfabéticamente por título):**
 
 ```json
 [
+  {
+    "id": 3,
+    "titulo": "APIs RESTful",
+    "contenido": "REST es un estilo arquitectónico...",
+    "autores_id": 1,
+    "published": true,
+    "creado": "2026-09-22T00:10:41.667Z"
+  },
+  {
+    "id": 5,
+    "titulo": "Async/Await explicado",
+    "contenido": "Las promesas simplifican el código asíncrono...",
+    "autores_id": 1,
+    "published": false,
+    "creado": "2026-09-22T00:10:41.667Z"
+  },
   {
     "id": 1,
     "titulo": "Introducción a Node.js",
     "contenido": "Node.js es un runtime de JavaScript...",
     "autores_id": 1,
     "published": true,
-    "creado": "2026-09-23T04:50:00.000Z"
+    "creado": "2026-09-22T00:10:41.667Z"
   }
 ]
 ```
@@ -166,7 +188,7 @@ curl http://localhost:3000/posts
 ### Crear un post
 
 ```bash
-curl -X POST http://localhost:3000/posts \
+curl -X POST https://miniblog-api-production-6f3c.up.railway.app/posts \
   -H "Content-Type: application/json" \
   -d '{
     "titulo": "Introducción a PostgreSQL",
@@ -176,7 +198,7 @@ curl -X POST http://localhost:3000/posts \
   }'
 ```
 
-**Respuesta:**
+**Respuesta (ejemplo ilustrativo; el id real depende de cuántos registros haya):**
 
 ```json
 {
@@ -194,7 +216,7 @@ curl -X POST http://localhost:3000/posts \
 ### Obtener posts de un autor específico
 
 ```bash
-curl http://localhost:3000/posts/author/1
+curl https://miniblog-api-production-6f3c.up.railway.app/posts/author/1
 ```
 
 **Respuesta:**
@@ -221,7 +243,7 @@ curl http://localhost:3000/posts/author/1
 
 La documentación interactiva completa de la API está disponible en:
 
-**`<URL_DE_RAILWAY>/api-docs`** (o `http://localhost:3000/api-docs` en desarrollo local)
+**`https://miniblog-api-production-6f3c.up.railway.app/api-docs`** (o `http://localhost:3000/api-docs` en desarrollo local)
 
 Ahí podés:
 - Ver todos los endpoints con detalles completos
