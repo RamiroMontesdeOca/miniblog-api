@@ -5,6 +5,25 @@ async function getPosts() {
     return result.rows;
 } 
 
+async function getPostsByAuthorId(authorId) {
+    const result = await pool.query(
+    `SELECT
+        posts.id AS post_id,
+        posts.titulo AS post_titulo,
+        posts.published AS post_published,
+        posts.creado AS post_creado,
+        posts.contenido,
+        authors.id AS author_id,
+        authors.nombre AS author_nombre,
+        authors.email AS author_email,
+        authors.bio
+    FROM posts
+    INNER JOIN authors ON posts.autores_id = authors.id
+    WHERE posts.autores_id = $1`,[authorId]
+    );
+    return result.rows;
+}
+
 async function getPostById(id) {
     const result = await pool.query('SELECT * FROM posts WHERE id = $1', [id]);
     return result.rows[0];
@@ -30,4 +49,4 @@ async function deletePost(id){
         return result.rowCount;
 }
 
-module.exports ={ getPosts,getPostById,createPost,updatePost,deletePost};
+module.exports ={ getPosts,getPostById,createPost,updatePost,deletePost,getPostsByAuthorId};

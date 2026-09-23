@@ -65,6 +65,6 @@ describe('DELETE /authors/:id', () => {
 
         const response = await request(app).delete(`/authors/${idToDelete}`);
 
-        expect(response.statusCode).toBe(200);
+        expect(response.statusCode).toBe(204);
     });
 });

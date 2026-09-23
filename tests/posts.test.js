@@ -9,6 +9,21 @@ describe ('GET /posts', () => {
     });
 });
 
+describe('GET /posts/author/:authorId', () =>{
+    it('debería devolver 200 si los posts existen', async () => {
+        const response = await request(app).get('/posts/author/1');
+        expect(response.status).toBe(200);
+    });
+});
+
+describe('GET /posts/author/:authorId', () =>{
+    it('debería devolver 200 si no tiene ningun post', async () => {
+        const response = await request(app).get('/posts/author/10');
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual([]);
+    });
+});
+
 describe('GET /posts/:id', () => {
     it('debería devolver 404 si el post no existe', async () => {
         const response = await request(app).get('/posts/99999');
@@ -65,6 +80,6 @@ describe('DELETE /posts/:id', () => {
 
         const response = await request(app).delete(`/posts/${idToDelete}`);
 
-        expect(response.statusCode).toBe(200);
+        expect(response.statusCode).toBe(204);
     });
 });

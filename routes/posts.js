@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getPosts,getPostById,createPost,updatePost,deletePost } = require('../services/postsService');
+const { getPosts,getPostById,createPost,updatePost,deletePost,getPostsByAuthorId } = require('../services/postsService');
 
 router.get('/', async(req, res)=>{
     try {
@@ -9,6 +9,19 @@ router.get('/', async(req, res)=>{
     }catch (error) {
         console.error('Error obteniendo posts', error);
         res.status(500).json({error:'Error obtiendio posts'});
+    }
+});
+
+router.get('/author/:authorId', async(req, res)=>{
+        try{
+        const posts = await getPostsByAuthorId (req.params.authorId)
+        
+        res.json(posts);
+
+    }catch (error) {
+        console.error('Error obteniendo posts', error);
+
+        res.status(500).json({ error: 'Error obteniendo posts'});
     }
 });
 
@@ -60,7 +73,7 @@ router.delete('/:id', async (req, res)=>{
         if (!postDeleted){
             return res.status(404).json({ error: 'post no encontrado'});
         }
-        res.json({message: 'post eliminado exitosamente'});
+        res.status(204).send();
     }catch (error){
         res.status(500).json({error: 'error eliminando post'});
     }

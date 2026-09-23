@@ -63,7 +63,7 @@ router.delete('/:id', async (req, res)=>{
         if (!authorDeleted){
             return res.status(404).json({ error: 'Autor no encontrado'});
         }
-        res.json({message: 'autor eliminado exitosamente'});
+        res.status(204).send();
     }catch (error){
         res.status(500).json({error: 'error eliminando autor'});
     }
