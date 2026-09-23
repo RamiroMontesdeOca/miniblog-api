@@ -8,12 +8,11 @@ info:
     con relación de clave foránea entre posts y autores.
  
 servers:
+  - url: https://miniblog-api-production-6f3c.up.railway.app
+    description: Servidor de producción (Railway)
   - url: http://localhost:3000
     description: Servidor de desarrollo
-  # Cuando despliegues a Railway, agregá acá la URL pública, por ejemplo:
-  # - url: https://tu-app-production.up.railway.app
-  #   description: Servidor de producción
-
+ 
 tags:
   - name: Autores
     description: Operaciones sobre autores
